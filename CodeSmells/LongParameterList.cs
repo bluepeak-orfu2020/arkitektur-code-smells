@@ -8,19 +8,30 @@ namespace CodeSmells
 {
     class LongParameterList
     {
-        public int Compute(string userId, bool isAdmin, bool allowUpdates, bool applyTax, string category1, string category2)
+        public void Callee()
+        {
+            Settings settings = new Settings()
+            {
+                IsAdmin = true,
+                AllowUpdates = true,
+                ApplyTax = false
+            };
+            new LongParameterList().Compute("abc", settings, "ca", "cb");
+        }
+
+        public int Compute(string userId, Settings settings, string category1, string category2)
         {
             int result = userId.Length;
 
-            if (isAdmin)
+            if (settings.IsAdmin)
             {
                 result *= 1000;
             }
-            if (allowUpdates)
+            if (settings.AllowUpdates)
             {
                 result -= 50;
             }
-            if (applyTax && category1 == "export")
+            if (settings.ApplyTax && category1 == "export")
             {
                 result = 0;
             }
@@ -31,5 +42,12 @@ namespace CodeSmells
 
             return result;
         }
+    }
+
+    class Settings
+    {
+        public bool IsAdmin { get; set; }
+        public bool AllowUpdates { get; set; }
+        public bool ApplyTax { get; set; }
     }
 }
