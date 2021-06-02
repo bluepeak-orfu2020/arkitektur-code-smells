@@ -12,6 +12,14 @@ namespace CodeSmells
         public void PrintInfo()
         {
             List<User> users = new List<User>();
+            users.Add(new User());
+            users.Add(new User());
+            users.Add(new SpecialUser() { ExtraSpecial = true }); // will throw unexpected exception
+
+            foreach (User user in users)
+            {
+                Console.WriteLine($"User: {user.ToString()}");
+            }
         }
     }
 
