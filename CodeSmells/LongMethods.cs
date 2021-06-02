@@ -10,24 +10,31 @@ namespace CodeSmells
     {
         public int LongMethod(string userId, string categoryId)
         {
-            if (userId == null || userId == "")
-            {
-                throw new Exception("Invalid user");
-            }
-            if (categoryId == null || categoryId == "")
-            {
-                throw new Exception("Invalid category");
-            }
-
-            string uid = userId;
-            if (!userId.StartsWith("abc:"))
-            {
-                uid = $"abc:{userId}";
-            }
+            ValidateInput(userId, categoryId);
+            string uid = NormalizeInput(userId);
 
             Category category = new Category() { Cid = categoryId };
             User user = new User() { Uid = uid, Category = category };
+            UserComputation1(user);
+            return UserComputation2(user);
+        }
 
+        private static int UserComputation2(User user)
+        {
+            int newResult = user.ComputeMoreStuff();
+
+            if (newResult > 5)
+            {
+                return 10;
+            }
+            else
+            {
+                return newResult;
+            }
+        }
+
+        private static void UserComputation1(User user)
+        {
             int result = user.ComputeStuff();
 
             if (result < 20)
@@ -38,16 +45,28 @@ namespace CodeSmells
             {
                 user.Category = new Category() { Cid = "123" };
             }
+        }
 
-            int newResult = user.ComputeMoreStuff();
-
-            if (newResult > 5)
+        private static string NormalizeInput(string userId)
+        {
+            string uid = userId;
+            if (!userId.StartsWith("abc:"))
             {
-                return 10;
+                uid = $"abc:{userId}";
             }
-            else
+
+            return uid;
+        }
+
+        private static void ValidateInput(string userId, string categoryId)
+        {
+            if (userId == null || userId == "")
             {
-                return newResult;
+                throw new Exception("Invalid user");
+            }
+            if (categoryId == null || categoryId == "")
+            {
+                throw new Exception("Invalid category");
             }
         }
 
